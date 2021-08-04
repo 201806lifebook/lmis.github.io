@@ -1,60 +1,80 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <meta charset="utf-8">
-    <title>BotUI - Hello World</title>
-    <meta name="viewport" content="width=device-width", initial-scale=1, maximum-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>BotUIサンプル</title>
     <link rel="stylesheet" href="https://unpkg.com/botui/build/botui.min.css" />
     <link rel="stylesheet" href="https://unpkg.com/botui/build/botui-theme-default.css" />
   </head>
   <body>
-    <div class="botui-app-container" id="LMISBOT">
+    <div class="botui-app-container" id="search-repo">
       <bot-ui></bot-ui>
     </div>
-  <script src="https://cdn.jsdelivr.net/vue/latest/vue.min.js"></script>
-  <script src="https://unpkg.com/botui/build/botui.min.js"></script>
+    
+    <!---->
+    <!--BOTUIのデフォルトは↓-->
+    <!--<script src="https://cdn.jsdelivr.net/vue/latest/vue.min.js"></script>-->
+    <!--サイト推奨は↓-->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/botui/build/botui.min.js"></script>
 
-  <script>
-    var botui = new BotUI('LMISBOT');
+<script>
+(function() {
 
-//******************//
-// 最初のメッセージ //
-//******************//
+  var url = 'https://api.github.com/search/repositories?q=';
+  var msgIndex, key;
+  var botui = new BotUI('search-repo');
+
+ /////////
+  //初期メッセージ
   botui.message.bot({
-    content: 'こんにちは!'
+    content: 'HELLO!'
   }).then();
 
   botui.message.bot({
     delay: 1000, 
-    content: unescape('LMISボットです!')
+    content: unescape('adviser bot oimoです!')
   }).then();
 
   botui.message.bot({
     delay: 2000, 
-    content: unescape('LMISボットにお問い合わせいただき、ありがとうございます。')
-  }).then(init);
+    content: unescape('swチャットボットにお問い合わせいただき、誠にありがとうございます。')
+  }).then();
 
-//****************//
-// 実施可否を選択 //
-//****************//
+
+  botui.message.bot({
+    delay: 3000, 
+    content: unescape('現在は、一部のチャットサポートの提供になっております。')
+  }).then();
+  
+
+
+  botui.message.bot({
+    delay: 4000, 
+    content: unescape('これから一緒に、お気入りを見つけてみましょう☺。')
+  }).then(init);
+  
+////////初期問題
   function init() {
     var i = 0;
     botui.message.bot({
-      delay: 1000,  //1秒 表示タイミングを待つ
-      content: 'では、はじめますか？'
+      delay: 1500,  //メッセージの表示タイミングをずらす
+      content: 'はじめる。'
     }).then(function() {
 
-    // ボタンを表示する．
+    // ボタンを提示する．
     return botui.action.button({
         autoHide: false,
-        delay: 1000,
+        delay: 1500,
         action: [
-          {icon: 'circle-o', text: 'はい', value: 'asketc'},
-          {icon: 'times',text:   'いいえ', value: 'askend'}
+          {text: 'はい', value: 'asketc'},
+          {text: 'いいえ', value: 'askend'}
         ]
       });
     }).then(function(res) {
-        // ボタンの回答結果から処理を分岐する
         botui.action.hide();
         switch (res.value) {
           case 'asketc': asketc(); break;
@@ -62,192 +82,398 @@
           default: end();
         }
       });    
-  }
 
-//**********//
-// asketc() //
-//**********//
+  }
+  /////// asketc
   function asketc() {
-  botui.message.add({
-      delay: 1000,
-      content: '何について知りたいですか？'
-    }).then();
     botui.message.add({
       delay: 1500,
-      content: '以下のボタンからご選択ください。'
+      content: '何の話をしましょうか。。'
     }).then(function() {
-      // ボタンを表示する．
+      // ボタンを提示する．
       return botui.action.button({
-        delay: 1000,
+        delay: 1500,
         action: [
-          { text: 'ユニリタについて', value: 'unirita'},//回答1
-          { text: 'LMISについて', value: 'lmis'},       //回答2
-          { text: 'その他', value: 'asketc'},
-          { text: 'やめる', value: 'askend'}
+          { text: '〇投資信託について', value: 'toushin'},//回答1
+          { text: '株式について', value: 'kabu'},//回答2
+          { text: '金融知識について', value: 'study'},//回答3
+          { text: 'SDGsについて', value: 'sdgs'},//回答4
+          { text: 'その他', value: 'asketc'}, //
+          { text: 'やめる', value: 'askend'}//回答5
         ]
       });
     }).then(function(res) {
       switch (res.value) {
-        case 'unirita': unirita(); break; //回答1から問題1へ
-        case 'lmis': lmis(); break;       //回答2から問題2へ(未実装)
-        case 'asketc': asketc(); break;
+        case 'toushin': toushin(); break;//回答1から問題1へ
+        case 'kabu': showAsk2(); break;//回答2から問題2へ
+        case 'study': showAsk3(); break;//回答3から問題3へ
+        case 'sdgs': showAsk4(); break;//回答4から問題4へ
+        case 'asketc': asketc(); break;//回答4から問題4へ
         case 'askend': showAskend(); break;
       }
     });
 }
-
-//***********//
-// unirita() //
-//***********//
-function unirita(){
+/////// 投資信託---answertoushin
+function toushin(){
   botui.message.add({
       delay: 1000,
-      content: 'ユニリタについて学んでみましょう。'
+      content: '投資信託について学んでみましょう。'
     }).then();
       botui.message.bot({
-        delay: 1000, 
-        content: unescape('以下のボタンからご選択ください。')
+        delay: 1500, 
+        content: unescape('以下のボタンからご選択ださい。')
     }).then(function() {
-      // ボタンを表示する．
+      // ボタンを提示する．
       return botui.action.button({
         delay: 1000,
         action: [
-          { text: 'ユニリタの意味は', value: 'unirita1'},         //回答1
-          { text: 'その他', value: 'asketc'},                     //
-          { text: 'やめる', value: 'askend'}                      //
+          { text: '〇投資信託とは', value: 'toushin1'},//回答1
+          { text: '投資信託の基準価格', value: 'toushin2'},//回答2
+          { text: '〇投資信託を見つけたい', value: 'toushin3'},//回答3
+          { text: '保有中の投資信託を見たい', value: 'toushin4'},//回答4
+          { text: 'その他', value: 'asketc'}, //
+          { text: 'やめる', value: 'askend'}//回答5
         ]
       });
     }).then(function(res) {
         switch (res.value) {
-          case 'unirita1': unirita1(); break;//回答1から問題1へ(未実装)
-          case 'asketc': asketc(); break;    //回答4から問題4へ
+          case 'toushin1': toushin1(); break;//回答1から問題1へ
+          case 'toushin2': toushin2(); break;//回答2から問題2へ
+          case 'toushin3': toushin3(); break;//回答3から問題3へ
+          case 'toushin4': toushin4(); break;//回答4から問題4へ
+          case 'asketc': asketc(); break;//回答4から問題4へ
           case 'askend': showAskend(); break;
         }
       });
   }
 
-//************//
-// unirita1() //
-//************//
-function unirita1(){
-  botui.message.add({
-      delay: 1000,
-      content: 'ユニークな発想でサービス提供＋お客様の利益に資する利他の精神'
-    }).then();
-      botui.message.bot({
-        delay: 1000, 
-        content: unescape('以下のボタンからご選択ください。')
-    }).then(function() {
-      // ボタンを表示する．
-      return botui.action.button({
-        delay: 1000,
-        action: [
-          { text: 'その他', value: 'asketc'},
-          { text: 'やめる', value: 'askend'}
-        ]
-      });
-    }).then(function(res) {
-        switch (res.value) {
-          case 'asketc': asketc(); break;
-          case 'askend': showAskend(); break;
-        }
-      });
-  }
 
-//********//
-// lmis() //
-//********//
-function lmis(){
-  botui.message.add({
-      delay: 1000,
-      content: 'LMISについて学んでみましょう。'
-    }).then();
-      botui.message.bot({
-        delay: 1000, 
-        content: unescape('以下のボタンからご選択ください。')
-    }).then(function() {
-      // ボタンを表示する．
-      return botui.action.button({
-        delay: 1000,
-        action: [
-          { text: 'LMISの意味は', value: 'lmis1'},
-          { text: 'その他', value: 'asketc'},
-          { text: 'やめる', value: 'askend'}
-        ]
-      });
-    }).then(function(res) {
-        switch (res.value) {
-          case 'lmis1': lmis1(); break;//回答1から問題1へ(未実装)
-          case 'asketc': asketc(); break;    //回答4から問題4へ
-          case 'askend': showAskend(); break;
-        }
-      });
-  }
 
-//*********//
-// lmis1() //
-//*********//
-function lmis1(){
-  botui.message.add({
-      delay: 1000,
-      content: 'Lifecycle Management for Intelligence Service'
-    }).then();
-      botui.message.bot({
-        delay: 1000, 
-        content: unescape('以下のボタンからご選択ください。')
-    }).then(function() {
-      // ボタンを表示する．
-      return botui.action.button({
-        delay: 1000,
-        action: [
-          { text: 'その他', value: 'asketc'},
-          { text: 'やめる', value: 'askend'}
-        ]
-      });
-    }).then(function(res) {
-        switch (res.value) {
-          case 'asketc': asketc(); break;
-          case 'askend': showAskend(); break;
-        }
-      });
-  }
 
-//********************//
-// 終了するか聞く関数 //
-//********************//
-function showAskend(){
+/////// 投資信託とは---answertoushin1
+function toushin1() {
   botui.message.add({
-    delay:1500,
-    content: '終了してもいいですか？'
+    delay: 1000,
+    content: '投資信託とは、「投資家から集めたお金をひとつの大きな資金としてまとめ、運用の専門家が株式や債券などに投資・運用する商品で、その運用成果が投資家それぞれの投資額に応じて分配される仕組みの金融商品」です。'
+  }).then();
+  botui.message.bot({
+    delay: 2000, 
+    content: unescape('自己資金１万円以内からはじめることができます。')
+  }).then();
+  botui.message.bot({
+    delay: 3000, 
+    content: unescape('投資信託の運用成績は市場環境などによって変動します。')
+  }).then();
+  botui.message.bot({
+    delay: 4000, 
+    content: unescape('投資信託の購入後に、投資信託の運用がうまくいって利益が得られることもあれば、運用がうまくいかず投資した額を下回って、損をすることもあります。')
+  }).then();
+  botui.message.bot({
+    delay: 5000, 
+    content: unescape('このように、投資信託の運用によって生じた損益は、それぞれの投資額に応じてすべて投資家に帰属します。')
+  }).then();
+  botui.message.bot({
+    delay: 6000, 
+    content: unescape('つまり、投資信託は元本が保証されている金融商品ではありません。')
   }).then(function() {
-
-    // ボタンを表示する．
+    // ボタンを提示する．
     return botui.action.button({
       delay: 1000,
       action: [
-        {icon: 'circle-o', text: 'はい', value: false},
-        {icon: 'times',  text: 'いいえ', value: true}]
+        { text: 'もっと詳しく知りたい。', value: 'toushin5'},//
+        { text: '投資信託（ファンド）を見る', value: 'swurl_toushin'},//
+        { text: '〇投資信託を見つけたい', value: 'toushin3'},//
+        { text: '〇もどる', value: 'askback'},
+        { text: 'その他', value: 'asketc'}, //
+        { text: 'やめる', value: 'askend'} //
+      ]
     });
   }).then(function(res) {
-    res.value ? init() : end();
+      switch (res.value) {
+        case 'toushin5': toushin5(); break;//
+        case 'answer4': showAsk6(); break;//
+        case 'toushin3': toushin3(); break;//
+        case 'askback': toushin(); break;//
+        case 'asketc': asketc(); break;//
+        case 'askend': showAskend(); break;
+      }
     });
 }
+/* 
+}).then();
+botui.message.bot({
+  delay: 6000, 
+  content: unescape('')*/
 
-//**************//
-// 終了する関数 //
-//**************//
+/////// 投資信託の基準価格---asktoushin2
+  function asktoushin2() {
+    botui.message.add({
+      delay: 1500,
+      content: 'ファンドの基準価格はswサイトへでご覧になれます。'
+    }).then(function() {
+      // ボタンを提示する．
+      return botui.action.button({
+        delay: 1500,
+        action: [
+          { text: 'swサイトへ', value: 'swurl_toushin'},//sw投資信託サイトへ遷移
+          { text: 'もっと詳しく知りたい。', value: 'answer3'},//
+          { text: '投資信託（ファンド）を見る', value: 'swurl_toushin'},//
+          { text: '〇投資信託を見つけたい', value: 'toushin3'},
+          { text: '〇運用会社から選ぶ', value: 'toushin_company'},
+          { text: 'その他', value: 'asketc'}, //
+          { text: 'やめる', value: 'askend'} //
+        ]
+      });
+    }).then(function(res) {
+        switch (res.value) {
+          case 'swurl_toushin': swurl_toushin(); break;//
+          case 'answer4': showAsk6(); break;//
+          case 'toushin3': toushin3(); break;//
+          case 'answer6': showAskend(); break;//
+          case 'askend': showAskend(); break;
+        }
+      });
+  }
+/////// 運用信託を見つけたい----toushin3
+  function toushin3() {
+    botui.message.add({
+      delay: 1000,
+      content: 'ファンドを見つけてみましょう。'
+    }).then(function() {
+      // ボタンを提示する．
+      return botui.action.button({
+        delay: 1500,
+        action: [
+          { text: '〇運用会社から選ぶ', value: 'toushin_company'},
+          { text: '基準価格から選ぶ', value: 'toushin_money'},
+          { text: '〇内容から選ぶ', value: 'toushin_naiyou'}, 
+          { text: '人気から選ぶ', value: 'toushin_ninki'}, 
+          { text: 'その他', value: 'asketc'}, 
+          { text: 'やめる', value: 'askend'} 
+        ]
+      });
+    }).then(function(res) {
+        switch (res.value) {
+          case 'toushin_company': toushin_company(); break;
+          case 'toushin_money': toushin_money(); break;
+          case 'toushin_naiyou': toushin_naiyou(); break;
+          case 'toushin_ninki': toushin_ninki(); break;
+          case 'asketc': asketc(); break;
+          case 'askend': showAskend(); break;
+        }
+      });
+  }
+  　//運用会社から選ぶ----toushin_company
+  function toushin_company() {
+    botui.message.add({
+      delay: 1000,
+      content: '運用会社を選択してください。'
+    
+    }).then(function() {
+      // ボタンを提示する．
+      return botui.action.button({
+        delay: 1500,
+        action: [
+          { text: '野村', value: 'toushin_nomura'},
+          { text: '大和アセット', value: 'answer13'},
+          { text: '日興アセット', value: 'answer14'} ,
+          { text: 'バークレイズ', value: 'answer14'} ,
+          { text: 'BNPパリバ', value: 'answer14'} ,
+          { text: '三菱UFJ', value: 'answer14'} ,
+          { text: '三井住友', value: 'answer14'} ,
+          { text: 'レオスキャピタル', value: 'answer14'}, 
+          { text: '〇内容から選ぶ', value: 'toushin_naiyou'}, 
+          { text: '〇もどる', value: 'askback'}, 
+          { text: 'その他', value: 'asketc'}, 
+          { text: 'やめる', value: 'askend'} 
+        ]
+      });
+    }).then(function(res) {
+        switch (res.value) {
+          case 'toushin_nomura': toushin_nomura(); break;
+          case 'answer13': sshowAsk12(); break;
+          case 'answer14': showAsk13(); break;
+          case 'toushin_naiyou': toushin_naiyou(); break;
+          case 'askback': toushin(); break;
+          case 'asketc': asketc(); break;
+          case 'askend': showAskend(); break;
+        }
+      });
+  }
+  ///内容から選ぶ----toushin_naiyou
+  function toushin_naiyou() {
+    botui.message.add({
+      delay: 1000,
+      content: '内容から探してみましょう。'
+    
+    }).then(function() {
+      // ボタンを提示する．
+      return botui.action.button({
+        delay: 1500,
+        action: [
+          { text: '資産複合（バランス型）', value: 'toushin_naiyou_baransu'}, 
+          { text: '国内株式', value: 'toushin_naiyou_kokunaikabu'}, 
+          { text: '海外株式', value: 'toushin_naiyou_kaigaikabu'}, 
+          { text: '内外株式', value: 'toushin_naiyou_naigaikabu'}, 
+          { text: '国内債券', value: 'toushin_naiyou_kokunaisaiken'}, 
+          { text: '海外債券', value: 'toushin_naiyou_kaigaisaiken'}, 
+          { text: '国内不動産', value: 'toushin_naiyou_kokunairiet'}, 
+          { text: '海外不動産', value: 'toushin_naiyou_kaigairiet'}, 
+          { text: '内外不動産', value: 'toushin_naiyou_naigairiet'}, 
+          { text: 'ETF', value: 'toushin_naiyou_etf'}, 
+          { text: '内外債券', value: 'toushin_naiyou_naigaisaiken'}, 
+          { text: '戻る', value: 'askback'}, 
+          { text: 'その他', value: 'asketc'}, 
+          { text: 'やめる', value: 'askend'}
+        ]
+      });
+    }).then(function(res) {
+        switch (res.value) {
+          case 'toushin_naiyou_baransu': toushin_naiyou_baransu(); break;
+          case 'toushin_naiyou_kokunaikabu': toushin_naiyou_kokunaikabu(); break;
+          case 'toushin_naiyou_kaigaikabu': toushin_naiyou_kaigaikabu(); break;
+          case 'toushin_naiyou_naigaikabu': toushin_naiyou_naigaikabu(); break;
+          case 'toushin_naiyou_kokunaisaiken': toushin_naiyou_kokunaisaiken(); break;
+          case 'toushin_naiyou_kaigaisaiken': toushin_naiyou_kaigaisaiken(); break;
+          case 'toushin_naiyou_kokunairiet': toushin_naiyou_kokunairiet(); break;
+          case 'toushin_naiyou_kaigairiet': toushin_naiyou_kaigairiet(); break;
+          case 'toushin_naiyou_naigairiet': toushin_naiyou_naigairiet(); break;
+          case 'toushin_naiyou_etf': toushin_naiyou_etf(); break;
+          case 'toushin_naiyou_naigaisaiken': toushin_naiyou_naigaisaiken(); break;
+          case 'back_toushin3': toushin3(); break;///caseが違うからきをつける
+          case 'askback': toushin3(); break;
+          case 'asketc': asketc(); break;
+          case 'askend': showAskend(); break;
+        }
+      });
+  }
+
+  function showAsk15() {
+    botui.message.add({
+      delay: 1000,
+      content: '「あああ」ファンドの基準価格は、12,000円です'
+    }).then(function() {
+      // ボタンを提示する．
+      return botui.action.button({
+        delay: 1500,
+        action: [
+          { text: '他ファンドを見たい', value: 'answer17'},//回答1
+          { text: '終わりにする', value: 'answer18'}//回答2
+        ]
+      });
+    }).then(function(res) {
+        switch (res.value) {
+          case 'answer17': showAsk11111(); break;//回答1から問題２へ
+          case 'answer18': showAskend(); break;//回答2から問題３へ
+        }
+      });
+  }
+
+  function showAsk1111() {
+
+  }
+
+  function showAsk1111() {
+
+  }
+  /*////////ここから
+  function 引数() {
+    botui.message.add({
+      delay: 1500,
+      content: '問題文１'
+    }).then(function() {
+      return botui.message.add({
+        delay: 2500,
+        content: '問題文２'
+      });
+    }).then(function() {
+      return botui.message.add({
+        delay: 2500,
+        content: '問題文３'
+      });
+    }).then(function() {
+      return botui.message.add({
+        delay: 2500,
+        content: '問題文４'
+      });
+    }).then(function() {
+      // ボタンを提示する．
+      return botui.action.button({
+        delay: 1500,
+        action: [
+          { text: '回答1', value: 'answer1'},//回答1
+          { text: '回答2', value: 'answer2'},//回答2
+          { text: '回答3', value: 'answer3'} //回答3
+        ]
+      });
+    }).then(function(res) {
+        switch (res.value) {
+          case 'answer1': showCarrier2(); break;//回答1から問題２へ
+          case 'answer2': showCarrier3(); break;//回答2から問題３へ
+          case 'answer3': showCarrier4(); break;//回答3から問題４へ
+        }
+      });
+  }
+  */ /////ここまで
+
+  /*
+  function showHobby() {
+    botui.message.add({
+      delay: 1500,
+      content: '正解！と言いたいところだけど残念。「USJ」は上場していないよ。USJは大阪にあるよね。大阪に本社を置く上場会社は「２２８２日本ハム」などが有名だよ。'
+    }).then(function() {
+      return botui.message.add({
+        delay: 2500,
+        content: '「日本ハム」といえば、肉類関連の「２２８８丸大食品」や、野球関連の「９９８４ソフトバンク」があるね。'
+      });
+    }).then(function() {
+      return botui.message.add({
+        delay: 2500,
+        content: '関連図を見たい場合は「関連図map」をご覧ください♪'
+      });
+    }).then(askEnd);
+  }
+*/
+  
+
+  // ///////プログラムを終了するか聞く関数．
+  function showAskend(){
+    botui.message.add({
+      delay:2000,
+      content: '終了してもいいですか？'
+    }).then(function() {
+
+      // ボタンを提示する．
+      return botui.action.button({
+        delay: 1500,
+        action: [
+          {text: 'はい', value: false},
+          {text: 'いいえ', value: true}]
+      });
+    }).then(function(res) {
+      res.value ? init() : end();
+      });
+  }
+//プログラムを終了する関数．
 function end() {
     botui.message.add({
-          delay: 1000,
-          content: 'また来てね'
-        }).then(function(){
-          return botui.message.add({
-            delay: 1000,
-            content: 'バイバイ！'
-        });
+      delay: 1500,
+      content: 'また来てね'
+    }).then(function(){
+      return botui.message.add({
+        delay: 1500,
+        content: 'バイバイ！'
     });
+});
 }
+
+})();
+
+
+
+
 </script>
 
-</body>
+
+  </body>
 </html>
