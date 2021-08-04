@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>BotUI - Hello World</title>
+    <meta name="viewport" content="width=device-width", initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="https://unpkg.com/botui/build/botui.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/botui/build/botui-theme-default.css" />
+  </head>
+  <body>
+    <div class="botui-app-container" id="LMISBOT">
+      <bot-ui></bot-ui>
+    </div>
+  <script src="https://cdn.jsdelivr.net/vue/latest/vue.min.js"></script>
+  <script src="https://unpkg.com/botui/build/botui.min.js"></script>
+
+  <script>
+    var botui = new BotUI('LMISBOT');
+
+//******************//
+// 最初のメッセージ //
+//******************//
+  botui.message.bot({
+    content: 'こんにちは!'
+  }).then();
+
+  botui.message.bot({
+    delay: 1000, 
+    content: unescape('LMISボットです!')
+  }).then();
+
+  botui.message.bot({
+    delay: 2000, 
+    content: unescape('LMISボットにお問い合わせいただき、ありがとうございます。')
+  }).then(init);
+
+//****************//
+// 実施可否を選択 //
+//****************//
+  function init() {
+    var i = 0;
+    botui.message.bot({
+      delay: 1000,  //1秒 表示タイミングを待つ
+      content: 'では、はじめますか？'
+    }).then(function() {
+
+    // ボタンを表示する．
+    return botui.action.button({
+        autoHide: false,
+        delay: 1000,
+        action: [
+          {icon: 'circle-o', text: 'はい', value: 'asketc'},
+          {icon: 'times',text:   'いいえ', value: 'askend'}
+        ]
+      });
+    }).then(function(res) {
+        // ボタンの回答結果から処理を分岐する
+        botui.action.hide();
+        switch (res.value) {
+          case 'asketc': asketc(); break;
+          case 'askend': showAskend(); break;
+          default: end();
+        }
+      });    
+  }
+
+//**********//
+// asketc() //
+//**********//
+  function asketc() {
+  botui.message.add({
+      delay: 1000,
+      content: '何について知りたいですか？'
+    }).then();
+    botui.message.add({
+      delay: 1500,
+      content: '以下のボタンからご選択ください。'
+    }).then(function() {
+      // ボタンを表示する．
+      return botui.action.button({
+        delay: 1000,
+        action: [
+          { text: 'ユニリタについて', value: 'unirita'},//回答1
+          { text: 'LMISについて', value: 'lmis'},       //回答2
+          { text: 'その他', value: 'asketc'},
+          { text: 'やめる', value: 'askend'}
+        ]
+      });
+    }).then(function(res) {
+      switch (res.value) {
+        case 'unirita': unirita(); break; //回答1から問題1へ
+        case 'lmis': lmis(); break;       //回答2から問題2へ(未実装)
+        case 'asketc': asketc(); break;
+        case 'askend': showAskend(); break;
+      }
+    });
+}
+
+//***********//
+// unirita() //
+//***********//
+function unirita(){
+  botui.message.add({
+      delay: 1000,
+      content: 'ユニリタについて学んでみましょう。'
+    }).then();
+      botui.message.bot({
+        delay: 1000, 
+        content: unescape('以下のボタンからご選択ください。')
+    }).then(function() {
+      // ボタンを表示する．
+      return botui.action.button({
+        delay: 1000,
+        action: [
+          { text: 'ユニリタの意味は', value: 'unirita1'},         //回答1
+          { text: 'その他', value: 'asketc'},                     //
+          { text: 'やめる', value: 'askend'}                      //
+        ]
+      });
+    }).then(function(res) {
+        switch (res.value) {
+          case 'unirita1': unirita1(); break;//回答1から問題1へ(未実装)
+          case 'asketc': asketc(); break;    //回答4から問題4へ
+          case 'askend': showAskend(); break;
+        }
+      });
+  }
+
+//************//
+// unirita1() //
+//************//
+function unirita1(){
+  botui.message.add({
+      delay: 1000,
+      content: 'ユニークな発想でサービス提供＋お客様の利益に資する利他の精神'
+    }).then();
+      botui.message.bot({
+        delay: 1000, 
+        content: unescape('以下のボタンからご選択ください。')
+    }).then(function() {
+      // ボタンを表示する．
+      return botui.action.button({
+        delay: 1000,
+        action: [
+          { text: 'その他', value: 'asketc'},
+          { text: 'やめる', value: 'askend'}
+        ]
+      });
+    }).then(function(res) {
+        switch (res.value) {
+          case 'asketc': asketc(); break;
+          case 'askend': showAskend(); break;
+        }
+      });
+  }
+
+//********//
+// lmis() //
+//********//
+function lmis(){
+  botui.message.add({
+      delay: 1000,
+      content: 'LMISについて学んでみましょう。'
+    }).then();
+      botui.message.bot({
+        delay: 1000, 
+        content: unescape('以下のボタンからご選択ください。')
+    }).then(function() {
+      // ボタンを表示する．
+      return botui.action.button({
+        delay: 1000,
+        action: [
+          { text: 'LMISの意味は', value: 'lmis1'},
+          { text: 'その他', value: 'asketc'},
+          { text: 'やめる', value: 'askend'}
+        ]
+      });
+    }).then(function(res) {
+        switch (res.value) {
+          case 'lmis1': lmis1(); break;//回答1から問題1へ(未実装)
+          case 'asketc': asketc(); break;    //回答4から問題4へ
+          case 'askend': showAskend(); break;
+        }
+      });
+  }
+
+//*********//
+// lmis1() //
+//*********//
+function lmis1(){
+  botui.message.add({
+      delay: 1000,
+      content: 'Lifecycle Management for Intelligence Service'
+    }).then();
+      botui.message.bot({
+        delay: 1000, 
+        content: unescape('以下のボタンからご選択ください。')
+    }).then(function() {
+      // ボタンを表示する．
+      return botui.action.button({
+        delay: 1000,
+        action: [
+          { text: 'その他', value: 'asketc'},
+          { text: 'やめる', value: 'askend'}
+        ]
+      });
+    }).then(function(res) {
+        switch (res.value) {
+          case 'asketc': asketc(); break;
+          case 'askend': showAskend(); break;
+        }
+      });
+  }
+
+//********************//
+// 終了するか聞く関数 //
+//********************//
+function showAskend(){
+  botui.message.add({
+    delay:1500,
+    content: '終了してもいいですか？'
+  }).then(function() {
+
+    // ボタンを表示する．
+    return botui.action.button({
+      delay: 1000,
+      action: [
+        {icon: 'circle-o', text: 'はい', value: false},
+        {icon: 'times',  text: 'いいえ', value: true}]
+    });
+  }).then(function(res) {
+    res.value ? init() : end();
+    });
+}
+
+//**************//
+// 終了する関数 //
+//**************//
+function end() {
+    botui.message.add({
+          delay: 1000,
+          content: 'また来てね'
+        }).then(function(){
+          return botui.message.add({
+            delay: 1000,
+            content: 'バイバイ！'
+        });
+    });
+}
+</script>
+
+</body>
+</html>
